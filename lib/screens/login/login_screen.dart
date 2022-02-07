@@ -56,9 +56,6 @@ class _LoginFormState extends State<LoginForm> {
                   border: OutlineInputBorder(),
                   hintText: 'Email',
                   contentPadding: EdgeInsets.all(10)),
-              onChanged: (email) {
-                print(emailController.value);
-              },
             ),
           ),
           const SizedBox(
@@ -90,7 +87,7 @@ class _LoginFormState extends State<LoginForm> {
                 );
               }
             },
-            child: Text('Login'),
+            child: const Text('Login'),
           )
         ],
       ),
