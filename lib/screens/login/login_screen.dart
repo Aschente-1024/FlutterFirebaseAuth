@@ -1,5 +1,7 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth_test/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -37,11 +39,14 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    print('loginscreen');
     return Form(
       key: _formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 120,
+          ),
           const SizedBox(
             height: 80,
             child: Text('Login', style: TextStyle(fontSize: 28)),
@@ -53,9 +58,11 @@ class _LoginFormState extends State<LoginForm> {
                   EmailValidator.validate(value!) ? null : 'Enter valid Email',
               controller: emailController,
               decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Email',
-                  contentPadding: EdgeInsets.all(10)),
+                border: OutlineInputBorder(),
+                hintText: 'Email',
+                contentPadding: EdgeInsets.all(10),
+              ),
+              textInputAction: TextInputAction.next,
             ),
           ),
           const SizedBox(
@@ -73,21 +80,49 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
           ),
+          SizedBox(
+            width: 320,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                    onPressed: () {
+                      context
+                          .read<UserProvider>()
+                          .forgotPassword(emailController.text);
+                    },
+                    child: const Text('Forgot Password?'))
+              ],
+            ),
+          ),
           const SizedBox(
             height: 24,
           ),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        'Email: ${emailController.value.text} Password: ${passwordController.value.text}'),
-                  ),
-                );
+                context.read<UserProvider>().loginUser(
+                    emailController.value.text, passwordController.value.text);
               }
             },
             child: const Text('Login'),
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 16.0),
+                  child: Text('Dont have account?'),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/signup');
+                    },
+                    child: const Text('Sign Up')),
+              ],
+            ),
           )
         ],
       ),
