@@ -1,4 +1,6 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth_test/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -38,11 +40,14 @@ class _SignupFormState extends State<SignupForm> {
 
   @override
   Widget build(BuildContext context) {
+    print('signupscreen');
     return Form(
       key: _formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 120,
+          ),
           const SizedBox(
             height: 80,
             child: Text('Sign Up', style: TextStyle(fontSize: 28)),
@@ -95,15 +100,29 @@ class _SignupFormState extends State<SignupForm> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        'Email: ${emailController.value.text} Password: ${passwordController.value.text}'),
-                  ),
-                );
+                context.read<UserProvider>().createNewUser(
+                    emailController.text, passwordController.text);
+                Navigator.pushReplacementNamed(context, '/');
               }
             },
             child: const Text('Sign up'),
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 16.0),
+                  child: Text('Already have account?'),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                    child: const Text('Log In')),
+              ],
+            ),
           )
         ],
       ),

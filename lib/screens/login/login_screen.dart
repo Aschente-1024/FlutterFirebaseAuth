@@ -118,7 +118,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/signup');
+                      Navigator.pushReplacementNamed(context, '/signup');
                     },
                     child: const Text('Sign Up')),
               ],
